@@ -11,7 +11,7 @@
 
 
 
-<title>index</title>
+<title>index.knit</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -348,15 +348,22 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">index</h1>
 
 </div>
 
 
 <div id="welcome" class="section level2">
 <h2>Welcome</h2>
+<p><strong>Dátum:</strong> <span id="current-date"></span></p>
+<p><br></p>
 <p>Ez a Fő oldal, ami majd később ki lesz egészítve mindenféle
 szépséggel!</p>
+<script>
+  const dateElement = document.getElementById('current-date');
+  const today = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  dateElement.textContent = today.toLocaleDateString('hu-HU', options);
+</script>
 </div>
 
 
