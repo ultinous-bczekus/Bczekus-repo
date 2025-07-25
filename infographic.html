@@ -583,7 +583,7 @@ background: linear-gradient(90deg, #665191, #d45087, #ff7c43);
         <section id="market-landscape" class="mb-20">
             <div class="text-center mb-10">
                 <h2 class="text-3xl font-bold text-[#003f5c]">Market Landscape: Cost vs. Capability</h2>
-                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">The market is defined by a spectrum from value-focused offerings to high-performance, premium solutions. NDAA compliance is a critical dividing line for government and enterprise projects.</p>
+                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">The market is defined by a spectrum from value-focused offerings to high-performance, premium solutions. This chart plots cost against the number of *standard, license-free* AI features.</p>
             </div>
             <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200">
                 <div class="chart-container">
@@ -749,12 +749,13 @@ background: linear-gradient(90deg, #665191, #d45087, #ff7c43);
 
         const marketLandscapeData = {
             datasets: [
-                { label: 'NDAA Compliant', backgroundColor: brilliantBluesPalette.gold, borderColor: brilliantBluesPalette.gold, data: [ {x: 934, y: 8, r: 20} ] }, 
-                { label: 'NDAA Compliant', backgroundColor: brilliantBluesPalette.gold, borderColor: brilliantBluesPalette.gold, data: [ {x: 1250, y: 9, r: 22} ] },
-                { label: 'NDAA Compliant', backgroundColor: brilliantBluesPalette.gold, borderColor: brilliantBluesPalette.gold, data: [ {x: 1367, y: 10, r: 25} ] },
-                { label: 'NDAA Compliant', backgroundColor: brilliantBluesPalette.gold, borderColor: brilliantBluesPalette.gold, data: [ {x: 1811, y: 7, r: 18} ] },
-                { label: 'Not NDAA Compliant', backgroundColor: brilliantBluesPalette.deepBlue, borderColor: brilliantBluesPalette.deepBlue, data: [ {x: 295, y: 5, r: 30} ] },
-                { label: 'Not NDAA Compliant', backgroundColor: brilliantBluesPalette.deepBlue, borderColor: brilliantBluesPalette.deepBlue, data: [ {x: 317, y: 6, r: 28} ] },
+                { label: 'Axis (NDAA Compliant)', backgroundColor: brilliantBluesPalette.gold, borderColor: brilliantBluesPalette.gold, data: [ {x: 934, y: 7, r: 21} ] }, 
+                { label: 'Avigilon (NDAA Compliant)', backgroundColor: brilliantBluesPalette.gold, borderColor: brilliantBluesPalette.gold, data: [ {x: 1250, y: 5, r: 15} ] },
+                { label: 'Hanwha (NDAA Compliant)', backgroundColor: brilliantBluesPalette.gold, borderColor: brilliantBluesPalette.gold, data: [ {x: 1367, y: 6, r: 18} ] },
+                { label: 'Mobotix (NDAA Compliant)', backgroundColor: brilliantBluesPalette.gold, borderColor: brilliantBluesPalette.gold, data: [ {x: 1811, y: 5, r: 15} ] },
+                { label: 'Bosch (NDAA Compliant)', backgroundColor: brilliantBluesPalette.gold, borderColor: brilliantBluesPalette.gold, data: [ {x: 1500, y: 5, r: 15} ] }, 
+                { label: 'Hikvision (Not NDAA)', backgroundColor: brilliantBluesPalette.deepBlue, borderColor: brilliantBluesPalette.deepBlue, data: [ {x: 295, y: 4, r: 12} ] },
+                { label: 'Dahua (Not NDAA)', backgroundColor: brilliantBluesPalette.deepBlue, borderColor: brilliantBluesPalette.deepBlue, data: [ {x: 317, y: 4, r: 12} ] },
             ]
         };
 
@@ -770,8 +771,7 @@ background: linear-gradient(90deg, #665191, #d45087, #ff7c43);
                         ...defaultChartOptions.plugins.tooltip,
                         callbacks: {
                              label: function(context) {
-                                const labels = ['Axis', 'Avigilon', 'Hanwha', 'Mobotix', 'Hikvision', 'Dahua'];
-                                let label = labels[context.datasetIndex] || '';
+                                let label = context.dataset.label || '';
                                 if (label) {
                                     label += ': ';
                                 }
@@ -781,13 +781,19 @@ background: linear-gradient(90deg, #665191, #d45087, #ff7c43);
                         }
                     },
                     legend: {
-                        ...defaultChartOptions.plugins.legend,
-                         onClick: (e, legendItem, legend) => {
-                            const index = legendItem.datasetIndex;
-                            const ci = legend.chart;
-                            const meta = ci.getDatasetMeta(index);
-                            meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
-                            ci.update();
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Inter' },
+                            filter: function(item, chart) {
+                                const text = item.text || '';
+                                if (text.includes('(NDAA Compliant)')) {
+                                    return text.startsWith('Axis');
+                                }
+                                if (text.includes('(Not NDAA)')) {
+                                    return text.startsWith('Hikvision');
+                                }
+                                return true;
+                            }
                         }
                     }
                 },
@@ -799,8 +805,8 @@ background: linear-gradient(90deg, #665191, #d45087, #ff7c43);
                     y: {
                         ...defaultChartOptions.scales.y,
                         min: 0,
-                        max: 12,
-                        title: { display: true, text: 'Relative Capability Score', color: '#4b5563', font: { weight: 'bold' } }
+                        max: 10,
+                        title: { display: true, text: 'Capability Score (Standard Features Only)', color: '#4b5563', font: { weight: 'bold' } }
                     }
                 }
             }
@@ -811,12 +817,12 @@ background: linear-gradient(90deg, #665191, #d45087, #ff7c43);
             datasets: [
                 {
                     label: 'Standard Features',
-                    data: [4, 2, 4, 3, 3, 4, 4],
+                    data: [7, 5, 6, 4, 4, 5, 5],
                     backgroundColor: brilliantBluesPalette.indigo,
                 },
                 {
                     label: 'Series-Specific Features',
-                    data: [0, 2, 2, 2, 3, 0, 0],
+                    data: [0, 2, 2, 3, 4, 0, 0],
                     backgroundColor: brilliantBluesPalette.magenta,
                 },
                 {
